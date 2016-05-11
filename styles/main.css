@@ -1,0 +1,446 @@
+/*
+filename : main.css
+author : Alex Billson
+created : 1/4/2016
+last modified : 1/4/2016
+description : The main CSS file for the project
+*/
+
+/*General CSS*/
+html,body{
+    font-family: "Century Gothic", "Helvetica";
+}
+h1, h2{
+    font-weight: 200;
+    margin: 0 0;
+}
+.header-image, .header-image-min{
+    background: url("images/header-server.jpg"); /*https://getreferralmd.com/wp-content/uploads/2013/12/hospital-servers.jpg*/
+    height: 300px;
+    width: 100%;
+    background-position-y: -500px;
+    background-position-x: center;
+    background-size: 120%;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    color: white;
+    text-shadow: 2px 2px 2px black;
+    box-shadow: 0px 2px 2px grey;
+}
+em{
+    color: #0288d1;
+}
+.current{
+    font-weight: 600;
+}
+.center{
+    text-align: center;
+}
+.header-image-min{
+    height: 60px;
+}
+#index-main{
+    margin-top: 310px;
+}
+#index-main-min{
+    margin-top: 65px;   
+}
+.link-flex{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.link-box{
+    height: 300px;
+    order: 1;
+    flex-shrink: 1;
+    margin: 20px auto;
+}
+.link-box:hover{
+    color: #0288d1;
+}
+.link-image{
+    height: 250px;
+    width: 300px;
+    background-position-y: -500px;
+    background-position-x: center;
+    background-size: 120%;
+    position: relative;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 2px 4px #5E5E5E;
+}
+.link-image:hover, .jobs-link:hover{box-shadow: 2px 2px 6px #5E5E5E;}
+nav{
+    width: 100%;
+    left: 0;
+    margin-top: -5px;
+    position: fixed;
+    color: white;
+    z-index: 9998;
+}
+nav > ul{
+    width: 100%;
+    margin: 0px 0px 0px -35px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background: #0288d1;
+    box-shadow: 1px 1px 1px grey;
+}
+nav > ul > li{
+    display: inline;
+    max-width: 60px;
+    margin: 0 10px;
+    list-style: decimal;
+}
+a{
+    margin: 0 0;
+    text-decoration: none;
+    color: inherit;
+}
+a[href~="enhancements.html"], a[href~="mailto:101091995@student.swin.edu.au"], .siglink{
+    text-decoration: underline;
+}
+a:visited{
+    color: inherit;
+}
+#job-image{
+    background: url("http://www.krillsystems.com/wp-content/uploads/2013/03/Data-Center.jpg");
+}
+#apply-image{
+    background: url("http://www.jubileeacademiccenter.com/live-the-life-leadership-academy/files/2012/08/employment_app.jpg");
+}
+#about-image{
+    background: url("http://thumbs.dreamstime.com/thumblarge_627/13141804009ztT7j.jpg");
+}
+footer{
+    clear: both;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    left: 0px;
+    background: #0288d1;
+    opacity: 0.2;
+}
+footer:hover{
+    opacity: 1;
+    height: 30px;
+    color: white;
+    cursor: default;
+}
+/*Job Screen CSS*/
+.jobs-flex{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.jobs-link{
+    height: 400px;
+    width: 350px;
+    order: 1;
+    flex-shrink: 1;
+    margin: 40px auto;
+    /*background: #EDEDED;*/
+    box-shadow: 2px 2px 4px #5E5E5E;
+}
+.jobs-icon{
+    height: 200px;
+}
+.jobs-float{
+    float: left;
+    height: 100%;
+}
+.details-float{
+    float: right;
+    /*box-shadow: 2px 2px 4px #5E5E5E;*/
+    width: 500px;
+    margin: 40px 35px 0px 0px;
+}
+.jobs-details{
+    width: 60%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+.apply-link{
+    text-decoration: underline;
+    padding-bottom: 50px;
+}
+.apply-link:hover{
+    color: #0288d1;
+}
+.form-apply, .content-centered{
+    padding-top: 50px;
+    width: 35%;
+    margin: 0 auto;
+}
+.skill-set{
+    text-align: right;
+}
+.about-me{
+    padding: 0 50px;
+    width: 50%;
+    margin: 0 auto;
+}
+.about-title{
+    font-size: 150%;
+}
+.form-header{
+    text-decoration: underline;
+    padding: 4px 0px;
+}
+/*Job Icons*/
+.icon1{
+    background: url("../images/job-icons/icon1.jpg");     /*http://cdn.abclocal.go.com/content/creativeContent/images/cms/030915-cc-happy-jobs-6-database-admin.jpg*/
+}
+.icon2{
+    background: url("../images/job-icons/icon2.jpg"); /*http://sc-pga.com/comment-essuyez-un-clean-computer-start-over*/
+}
+.icon3{
+    background: url("../images/job-icons/icon3.jpg"); /*http://www.searchgi.com/admin/assets/New-Technologies-Empower-Businesses-Created-By-Women.jpg*/
+}
+fieldset{
+    border: none;
+    margin: 10px 0;
+}
+/*Form CSS*/
+legend{
+    text-decoration: underline;
+}
+.input-field{
+    padding-left: 15px;
+    margin: 5px 0px;
+}
+.text-input{
+    width: 200px;
+    float: right;
+}
+.other-input{
+    width: 207px;
+    float: right;
+}
+.gender-input{
+    float: right;
+}
+.check-input{
+    width: 410px;
+    float: right;
+}
+.left-float{
+    float: left;
+}
+.right-float{
+    float: right;
+}
+.clear-float{
+    clear: both;
+}
+.stud-number{
+    font-family: Courier New, Courier, monospace;
+}
+textarea{
+    resize: none;
+}
+.img-admin{
+    width: 300px;
+    box-shadow: 0px 2px 2px grey;
+}
+/*About Page CSS*/
+.timetable{
+    margin: 20px auto;
+    border: none 0px;
+    box-shadow: 0px 2px 2px grey;
+}
+.timetable tr th{
+    padding: 0 10px;
+}
+.timetable{
+    border: solid thin gray;
+}
+.td-time{
+    font-style: italic;
+}
+.td-introtoprog{
+    background: #D198FF;
+}
+.td-webapps{
+    background: #FC54D5;
+}
+.td-bizlaw{
+    background: #C2C170;
+}
+.td-logic{
+    background: #6CB869;
+}
+.about-me{
+    padding-top:35px;
+}
+#error-log{
+    color:red;
+}
+.notificationtag{
+    position: fixed;
+    top : 200px;
+    left: -100px;
+    color: white;
+    background: #0288d1;
+    box-shadow: 0px 2px 2px grey;
+    padding: 5px 10px;   
+    animation: pop 0.5s forwards;
+}
+.notificationtag:hover{
+    cursor: default;
+}
+@keyframes pop {
+     100% {left: 10px;}
+ }
+
+/*
+    -- Tablet and smaller screen adaptive CSS --
+    Includes updates to the following :
+        - Image sizes for header image and job icons
+        - Increasing the width of centred content such as the about and job details page
+        - Padding from the top of the page is decreased for most body elements
+*/
+@media only screen and (max-width : 1400px){
+    .header-image, .header-image-min{
+        background-size: 200%;
+    }
+    .header-image{
+        height: 150px;
+    }
+    #index-main{
+        margin-top: 155px;
+    } 
+    .jobs-details > .icon1{
+        background: 300%;
+    }
+    .jobs-details{
+        width: 70%;
+        margin: 0 auto;
+    }
+    .jobs-float{
+        clear: both;
+        float: none;
+        margin: 40px auto;
+    }
+    .jobs-link{
+        margin-top: 20px;
+    }
+    .details-float{
+        clear: both;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .jobs-flex{
+        padding-top: 20px;
+    }
+    .form-apply, .content-centered{
+        width: 50%;
+    }
+    .about-me{
+        padding-top: 50px;
+        width: 70%;
+        margin: 0 auto;
+    }
+    .job-details{
+        margin-bottom: 20px;
+    }
+}
+
+/*
+    -- Mobile and portrait viewpoint adaptive CSS --
+    Includes updates to the following :
+        - Content is positioned vertically as opposed to horizontally
+        - Increasing the width of content to fill the entirety of the viewspace
+        - Text size is increased in forms and other areas
+        - Images for header elements are decreased to not waste screen space
+        - Padding from the top of the page is decreased for most body elements
+        - Content is repositioned
+*/
+@media only screen and (max-width : 800px){
+    .header-image{
+        height: 100px;
+        background-size: 300%;
+        /*background: url("https://pbs.twimg.com/profile_images/514282890524258305/-0LF7R2X.jpeg");*/
+    }
+    h1{
+        margin-top: 12px;
+        font-size: 22px;
+    }
+    #index-main{
+        margin-top: 105px;
+    }
+    #index-main-min{
+        padding-bottom: 30px;
+    }  
+    .link-flex{
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .link-box{
+        height: 300px;
+        width: 100%;
+    }
+    .link-image{
+        width: 100%;
+    }
+    #about-image, #apply-image{
+        background-size: 100%;
+    }
+    
+    .jobs-details{
+        width: 95%;
+    }
+    .jobs-float{
+        clear: both;
+        width: 100%;
+    }
+    .details-float{
+        clear: both;
+        width: 100%;
+        margin: 0 auto;
+        padding-bottom: 60px;
+    }
+    .jobs-link{
+        width: 100%;
+        height: 320px;
+    }
+    .form-apply, .content-centered{
+        width: 90%;
+    }
+    input, label{
+        font-size: 18px;
+    }
+    .input-field{
+        margin: 10px auto;
+    }
+    legend{
+        font-size: 22px;
+    }
+    .left-float, .right-float{
+        clear: both;
+        float: none;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .timetable{
+        width: 85%;
+        margin: 0 auto 0 auto;
+    }
+    .about-me{
+        padding-top: 50px;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .img-admin{
+        display: block;
+        margin: 20px auto;
+    }
+    /*.notificationtag{
+        width: 100%;
+    }*/
+}
