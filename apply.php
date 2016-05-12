@@ -16,7 +16,7 @@
             RenderHeader();
         ?>
         <div id="index-main-min">
-            <form class="form-apply"  method="post" action="http://mercury.ict.swin.edu.au/it000000/formtest.php">
+            <form class="form-apply" novalidate method="post" action="apply_confirm.php">
                 <h1 class="form-header">Apply For Position</h1>
                 <fieldset>
                     <!--DONT FORGET TO ADD REQUIRED TAGS-->

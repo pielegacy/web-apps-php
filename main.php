@@ -47,6 +47,7 @@
         {
             $sql = 'CREATE TABLE IF NOT EXISTS table_eoi('.
             'EOINumber int KEY AUTO_INCREMENT,'.
+            'EOIStatus int DEFAULT 0,'. // 0 = new, 1 = current, 2 = final
             'FirstName varchar(20) NOT NULL,'.
             'LastName varchar(30) NOT NULL,'.
             'AddressUnit varchar(20),'.
@@ -62,6 +63,7 @@
             $query = mysqli_query($this->conn, $sql);
         }
     }
+    
     function RenderJobPage(){
         $id = $_GET["jobid"];
         $mainbody = '';
@@ -168,9 +170,95 @@
                 $mainbody = "There's nothing here cowboy.";
                 break;
         }
-        function ValidateJobApplication(){
-            
-        }
         echo $mainbody;
+    }
+    // Validation for each individual field, returns true if valid, returns false if invalid
+    function ValidateField($key, $value){
+        $valid = true;
+        if (isset($value) && $value != "" && $value != "Submit"){
+            switch ($key) {
+                case 'firstname':
+                    if (strlen($value) > 25 || (!preg_match("/^[a-zA-Z]*$/", $value)))
+                        $valid = false;
+                    break;
+                case 'surname':
+                    if (strlen($value) > 25 || (!preg_match("/^[a-zA-Z \-]*$/", $value)))
+                        $valid = false;
+                    break;
+                case 'dateofbirth':
+                    $date = date_parse($value);
+                    $currentdate = getdate();
+                    $dateyear = $date['year'];
+                    $currentdateyear = $currentdate['year'];
+                    if ($currentdateyear - 80 >= $dateyear || $currentdateyear - 15 <= $dateyear) // dd/mm/yyyy validation
+                        $valid = false;
+                    break;
+                case 'streetname':
+                case 'suburbname':
+                    if (strlen($value) > 40){
+                        $valid = false;
+                    }
+                    break;
+                case 'statename':
+                    $states = array ('VIC', 'ACT', 'NSW', 'QLD', 'SA', 'WA', 'TAS', 'NT');
+                    $checks = false;
+                    foreach ($states as $statekey => $statevalue) {
+                        if ($statevalue == $value)
+                            $checks = true;
+                    }
+                    $valid = $checks;
+                    break;
+                case 'postcode':
+                    $statename = $_POST['statename'];
+                    $postcodepairs = array('3' => 'VIC', '8' => 'VIC','1' => 'NSW','2' => 'NSW','4' => 'QLD',
+                    '9' => 'QLD','0' => 'NT/ACT','6'=>'WA', '5' => 'SA','7' => 'TAS');
+                    $postsplit = str_split($value);
+                    if ($postcodepairs[$postsplit[0]]){
+                        echo "<p>Dis is ".var_dump(strpos($postcodepairs[$postsplit[0]], $statename))."<p>";
+                        if (strpos($postcodepairs[$postsplit[0]], $statename) == false){ // Fix this
+                            $valid = false;
+                        }
+                    }
+                    else {
+                        $valid = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch ($key) {
+                case 'firstname':
+                case 'surname':
+                case 'dateofbirth':
+                case 'streetname':
+                case 'suburbname':
+                case 'statename':
+                case 'gender':
+                case 'email':
+                case 'postcode':
+                case 'streetnumber':
+                    $valid = false;
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+        return $valid;
+    }
+    // Handles validation and submission logic
+    function SubmitJobApplication(){
+        $formvalid = true;
+        foreach ($_POST as $key => $value) {
+            if (ValidateField($key, $value) == false){
+                $formvalid = false;
+                echo "<p>".$key." is invalid. Form submission failed</p>";
+            }
+            else {
+                echo "<p>".$key." : ".$value."</p>";
+            }
+        }
     }
 ?>
