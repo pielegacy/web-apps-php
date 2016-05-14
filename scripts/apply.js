@@ -23,7 +23,7 @@ function init(){
         console.log("Unassigned Jobcode");
     }
     jobdropdown.addEventListener("click",editJob);
-    //window.onsubmit = submitForm; TURN BACK ON AFTER PROJECT IS FINISHED
+    //window.onsubmit = submitForm; 
 }
 function editJob(){
     //window.location = "jobs.html";

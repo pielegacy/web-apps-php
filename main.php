@@ -33,6 +33,36 @@
         </footer>
         ';
     }
+    // Prepares data from form for usage in SQL
+    function prepData($type, $formdata){
+        switch ($type) {
+            case 'skills':
+                    $skillstring = "";
+                    if (isset($formdata["skill-html"]))
+                        $skillstring .= "html|";
+                    if (isset($formdata["skill-css"]))
+                        $skillstring .= "css|";
+                    if (isset($formdata["skill-js"]))
+                        $skillstring .= "js|";
+                    if (isset($formdata["skill-php"]))
+                        $skillstring .= "php|";
+                    if (isset($formdata["skill-sql"]))
+                        $skillstring .= "sql|";
+                    if (isset($formdata["skill-mysql"]))
+                        $skillstring .= "mysql|";
+                    if (isset($formdata["skill-other"]))
+                        $skillstring .= "other";
+                    return $skillstring;
+                break;
+            
+            default:
+                if (!isset($formdata[$type]))
+                    return "";
+                else
+                    return $formdata[$type];
+                break;
+        }
+    }
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
@@ -51,6 +81,7 @@
             'FirstName varchar(20) NOT NULL,'.
             'LastName varchar(30) NOT NULL,'.
             'AddressUnit varchar(20),'.
+            'AddressStreetNumber varchar(20),'.
             'AddressStreet varchar(20) NOT NULL,'.
             'AddressSuburb varchar(20) NOT NULL,'.
             'AddressState varchar(20) NOT NULL,'.
@@ -61,6 +92,33 @@
             'Details text);';
             mysqli_select_db($this->conn,"main");
             $query = mysqli_query($this->conn, $sql);
+        }
+        public function addEOI($postData){
+            $stmt = $this->conn->prepare("INSERT INTO table_eoi (EOIStatus, FirstName,".
+            " LastName, AddressUnit, AddressStreetNumber, AddressStreet, AddressSuburb, AddressState, AddressPostCode, Email, Phone, Skills, Details)".
+            " VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            $skilldata = prepData("skills", $postData);
+            $unitplaceholder = prepData("unitnumber", $postData);
+            $detailsdata = prepData("details", $postData);
+            mysqli_stmt_bind_param($stmt, 'ssssssssssss' , 
+            $postData["firstname"], 
+            $postData["surname"], 
+            $unitplaceholder,
+            $postData["streetnumber"], 
+            $postData["streetname"], 
+            $postData["suburbname"], 
+            $postData["statename"], 
+            $postData["postcode"],
+            $postData["email"], 
+            $postData["phone"], 
+            $skilldata, 
+            $detailsdata);
+            if ($stmt->execute())
+                echo "<h3>Your data has been sent to our Human Resources Department for examination</h3>";
+            else
+                echo "<h3>Server error, please contact us for help</h3>";
+            $stmt->close();
+            $this->conn->close();
         }
     }
     
@@ -175,7 +233,7 @@
     // Validation for each individual field, returns true if valid, returns false if invalid
     function ValidateField($key, $value){
         $valid = true;
-        if (isset($value) && $value != "" && $value != "Submit"){
+        if (isset($value) && $value != "" && $value != NULL && $value != "Submit"){
             switch ($key) {
                 case 'firstname':
                     if (strlen($value) > 25 || (!preg_match("/^[a-zA-Z]*$/", $value)))
@@ -213,13 +271,28 @@
                     $postcodepairs = array('3' => 'VIC', '8' => 'VIC','1' => 'NSW','2' => 'NSW','4' => 'QLD',
                     '9' => 'QLD','0' => 'NT/ACT','6'=>'WA', '5' => 'SA','7' => 'TAS');
                     $postsplit = str_split($value);
-                    if ($postcodepairs[$postsplit[0]]){
-                        echo "<p>Dis is ".var_dump(strpos($postcodepairs[$postsplit[0]], $statename))."<p>";
-                        if (strpos($postcodepairs[$postsplit[0]], $statename) == false){ // Fix this
+                    if ($postcodepairs[$postsplit[0]]){ // Checks if element is a valid state
+                        if (strpos($postcodepairs[$postsplit[0]], $statename) === FALSE)
                             $valid = false;
-                        }
                     }
                     else {
+                        $valid = false;
+                    }
+                    break;
+                case 'email':
+                    if (!filter_var($value, FILTER_VALIDATE_EMAIL))
+                        $valid = false;
+                    break;
+                case 'phone':
+                    if (!preg_match("/^\d{4}[\ ]\d{3}[\ ]\d{3}|\d{10}$/", $value) || strlen($value) > 12 || strlen($value) < 8) // Why's this still getting through?
+                        $valid = false;
+                    break;
+                case 'skill-other':
+                    if (!isset($_POST["details"]) || $_POST["details"] == "")
+                        $valid = false;
+                    break;
+                case 'details' :
+                    if ($value == "" || $value == NULL){
                         $valid = false;
                     }
                     break;
@@ -256,9 +329,14 @@
                 $formvalid = false;
                 echo "<p>".$key." is invalid. Form submission failed</p>";
             }
-            else {
-                echo "<p>".$key." : ".$value."</p>";
-            }
+            // else {
+            //     echo "<p>".$key." : ".$value."</p>";
+            // }
+        }
+        if ($formvalid){
+            $sqlconn = new SqlConnection();
+            $sqlconn->init();
+            $sqlconn->addEOI($_POST);
         }
     }
 ?>

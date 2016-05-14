@@ -17,7 +17,7 @@
         ?>
         <div id="index-main-min">
             <div class="content-centered">
-                <h2>Job Submission</h2>
+                <h2>Job Submission Status</h2>
                 <?php
                     SubmitJobApplication();
                 ?>
