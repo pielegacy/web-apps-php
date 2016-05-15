@@ -16,6 +16,7 @@
         <div id="index-main-min" class="jobs-details">
             <?php RenderJobPage(); ?>
         </div>
+                <h1 id="error-message">Works</h1>
         <?php RenderFooter(); ?>
     </body>
 </html>

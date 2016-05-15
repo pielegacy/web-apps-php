@@ -16,6 +16,7 @@
         <header class="header-image-min">
             <br />
             <h1><a href="index.php">Database Administrator Company Pty. Ltd</a></h1>
+            <script src="scripts/notify.js"></script>
         </header>
         <nav>
             <ul>
@@ -88,6 +89,7 @@
             'AddressPostCode varchar(4) NOT NULL,'.
             'Email varchar(40) NOT NULL,'.
             'Phone varchar(15) NOT NULL,'.
+            'JobID varchar(6) NOT NULL,'.
             'Skills text,'.
             'Details text);';
             mysqli_select_db($this->conn,"main");
@@ -95,12 +97,12 @@
         }
         public function addEOI($postData){
             $stmt = $this->conn->prepare("INSERT INTO table_eoi (EOIStatus, FirstName,".
-            " LastName, AddressUnit, AddressStreetNumber, AddressStreet, AddressSuburb, AddressState, AddressPostCode, Email, Phone, Skills, Details)".
-            " VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            " LastName, AddressUnit, AddressStreetNumber, AddressStreet, AddressSuburb, AddressState, AddressPostCode, Email, Phone, JobID, Skills, Details)".
+            " VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             $skilldata = prepData("skills", $postData);
             $unitplaceholder = prepData("unitnumber", $postData);
             $detailsdata = prepData("details", $postData);
-            mysqli_stmt_bind_param($stmt, 'ssssssssssss' , 
+            mysqli_stmt_bind_param($stmt, 'sssssssssssss' , 
             $postData["firstname"], 
             $postData["surname"], 
             $unitplaceholder,
@@ -111,14 +113,33 @@
             $postData["postcode"],
             $postData["email"], 
             $postData["phone"], 
+            $postData["job-select"],
             $skilldata, 
             $detailsdata);
-            if ($stmt->execute())
-                echo "<h3>Your data has been sent to our Human Resources Department for examination</h3>";
-            else
+            if ($stmt->execute()){
+                echo "<h3>Your submission has been sent to our Human Resources Department for consideration.</h3>";
+                $this->retrieveEOINumber($postData["surname"]);
+            }
+            else{
                 echo "<h3>Server error, please contact us for help</h3>";
+            }
             $stmt->close();
             $this->conn->close();
+        }
+        // Retrieves the most recent EOI for a person depending on their surnamez
+        public function retrieveEOINumber($lastName){
+            $stmt = $this->conn->prepare("SELECT EOINumber FROM table_eoi WHERE ". 
+            "LastName = ? ORDER BY EOINumber DESC LIMIT 1;");
+            if (!mysqli_stmt_bind_param($stmt, 's', $lastName))
+                die( mysqli_error($this->conn));
+            if ($stmt->execute()){
+                $res = $stmt->get_result();
+                $array = $res->fetch_assoc();
+                echo "<p>Your Expression Of Interest Reference Number is <br/><blockquote>".$array["EOINumber"]."</blockquote>";
+            }
+            else {
+                echo "<h3>Failed to retrieve EOINumber, contact support</h3>";
+            }
         }
     }
     
@@ -287,6 +308,10 @@
                     if (!preg_match("/^\d{4}[\ ]\d{3}[\ ]\d{3}|\d{10}$/", $value) || strlen($value) > 12 || strlen($value) < 8) // Why's this still getting through?
                         $valid = false;
                     break;
+                case 'job-select':
+                    if (strlen($value) != 6)
+                        $valid = false;
+                    break;
                 case 'skill-other':
                     if (!isset($_POST["details"]) || $_POST["details"] == "")
                         $valid = false;
@@ -327,7 +352,7 @@
         foreach ($_POST as $key => $value) {
             if (ValidateField($key, $value) == false){
                 $formvalid = false;
-                echo "<p>".$key." is invalid. Form submission failed</p>";
+                echo "<p>".$key." is invalid.</p>";
             }
             // else {
             //     echo "<p>".$key." : ".$value."</p>";
@@ -337,6 +362,10 @@
             $sqlconn = new SqlConnection();
             $sqlconn->init();
             $sqlconn->addEOI($_POST);
+            echo "<div id='success-message'><h2>Job Submission Successful, Refer To EOI Number</h2></div>";
+        }
+        else {
+            echo "<div class='error-message'><h2>Job Submission Failed, Check Fields</h2></div>";
         }
     }
 ?>

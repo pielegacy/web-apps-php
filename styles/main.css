@@ -280,6 +280,13 @@ textarea{
 #error-log{
     color:red;
 }
+.error-message{
+    color: #FF3F0F;
+    text-decoration: underline;    
+}
+.error-message::before{
+    content: "Something Went Wrong :";
+}
 .notificationtag{
     position: fixed;
     top : 200px;

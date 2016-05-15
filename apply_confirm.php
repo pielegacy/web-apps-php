@@ -7,8 +7,8 @@
         <meta name="description" content="Database Administrator Company Pty. Ltd Apply Page" />
         <meta name="keywords" content="db,pty,ltd,apply" />
         <meta name="author" content="Alex Billson" />
-        <script src="scripts/apply.js"></script>
         <script src="scripts/notify.js"></script>
+        <script src="scripts/phplinker.ts"></script>
         <?php require "main.php"; ?>
     </head>
     <body>

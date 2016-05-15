@@ -7,6 +7,8 @@
         <meta name="description" content="Database Administrator Company Pty. Ltd Home Page" />
         <meta name="keywords" content="db,pty,ltd,home" />
         <meta name="author" content="Alex Billson" />
+        <script src="scripts/notify.js"></script>
+        <script src="scripts/phplinker.js"></script>
         <!-- DON'T FORGET META TAGS -->
     </head>
     <body>
