@@ -7,12 +7,28 @@
     * Credits: Myself
     */
     // Used to render minimal-header, CSS applied in page
-    function RenderHeader()
+    function RenderHeader($type = "main")
     {
     //    TESTING CODE  
     //    $sqlmanager = new SqlConnection();
     //    $sqlmanager->init();
+        if ($type == "hr"){
         echo '
+        <header class="header-image-min">
+            <br />
+            <h1><a href="index.php">Database Administrator Company Pty. Ltd</a></h1>
+            <script src="scripts/notify.js"></script>
+        </header>
+        <nav class="hr-nav">
+            <ul>
+                <li><a class="current" href="hrportal.php">HR Portal</a></li>
+                <li> | </li>
+                <li><a href="index.php">Exit</a></li>
+            </ul>
+        </nav>';
+        }
+        else {
+            echo '
         <header class="header-image-min">
             <br />
             <h1><a href="index.php">Database Administrator Company Pty. Ltd</a></h1>
@@ -25,14 +41,24 @@
                 <li><a href="about.php">About</a></li>
             </ul>
         </nav>';
+        }
     }
     // Similar to render header, but for the footer 
-    function RenderFooter(){
+    function RenderFooter($type = "main"){
+        if ($type == "hr"){
+            echo '
+            <footer class="hr-nav">
+                &copy; 2016, Alex Billson - Interested in the site\'s PHP enhancements? <a href="enhancements.html">Click here</a>
+            </footer>
+            ';
+        }
+        else {
         echo '
-        <footer>
-            &copy; 2016, Alex Billson - Interested in the site\'s enhancements? <a href="enhancements.html">Click here</a>
-        </footer>
-        ';
+            <footer>
+                &copy; 2016, Alex Billson - Interested in the site\'s enhancements? <a href="enhancements.html">Click here</a>
+            </footer>
+            ';
+        }
     }
     // Prepares data from form for usage in SQL
     function prepData($type, $formdata){
@@ -64,6 +90,7 @@
                 break;
         }
     }
+    
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
@@ -138,11 +165,43 @@
                 echo "<p>Your Expression Of Interest Reference Number is <br/><blockquote>".$array["EOINumber"]."</blockquote>";
             }
             else {
-                echo "<h3>Failed to retrieve EOINumber, contact support</h3>";
+                errorMessage("Failed to retrieve EOI Number");    
             }
         }
+        // Used to easierly pull HR Related queries
+        public function hrQuery($type){
+            $valid = true;
+            switch ($type) {
+                case 'pull-all':
+                        $stmt = $this->conn->prepare("SELECT * FROM table_eoi;");
+                        if ($stmt->execute()){
+                            echo "<table><tr><th>EOI</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th></tr>";
+                            $res = $stmt->get_result();
+                            while ($row = $res->fetch_assoc())
+                                echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
+                                . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
+                                $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"] 
+                                ."</td></tr>";
+                            echo "</table>";
+                        }
+                        else {
+                            $valid = false;
+                        }
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            if (!$valid)
+                errorMessage("Unexpected Error. Contact Support");
+        }
     }
-    
+    function RenderHRPage($type){
+        $sql = new SqlConnection();
+        $sql->init();
+        $sql->hrQuery($type);
+    }
     function RenderJobPage(){
         $id = $_GET["jobid"];
         $mainbody = '';
@@ -365,7 +424,12 @@
             echo "<div id='success-message'><h2>Job Submission Successful, Refer To EOI Number</h2></div>";
         }
         else {
-            echo "<div class='error-message'><h2>Job Submission Failed, Check Fields</h2></div>";
+            errorMessage("Job Submission Failed, Check Fields");
         }
     }
+    // Error helper
+    function errorMessage($content){
+        echo "<div class='error-message'><h2>".$content."</h2></class>";
+    }
+    
 ?>

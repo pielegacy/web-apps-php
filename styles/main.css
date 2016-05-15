@@ -47,6 +47,19 @@ em{
 #index-main-min{
     margin-top: 65px;   
 }
+#hr-table{
+    width: 100%;
+    margin-top: 65px;  
+}
+#hr-table>table{
+    width: 80%;
+    margin: 0 auto;
+    text-align: left;
+}
+#hr-table>table>tbody>tr{
+    border-bottom: solid 1px;
+}
+
 .link-flex{
     display: flex;
     width: 100%;
@@ -89,6 +102,14 @@ nav > ul{
     background: #0288d1;
     box-shadow: 1px 1px 1px grey;
 }
+nav[class="hr-nav"] > ul{
+    width: 100%;
+    margin: 0px 0px 0px -35px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background: darkorange;
+    box-shadow: 1px 1px 1px grey;
+}
 nav > ul > li{
     display: inline;
     max-width: 60px;
@@ -124,6 +145,9 @@ footer{
     left: 0px;
     background: #0288d1;
     opacity: 0.2;
+}
+footer[class="hr-nav"]{
+    background: darkorange;
 }
 footer:hover{
     opacity: 1;
