@@ -12,6 +12,7 @@
     <body>
         <?php RenderHeader("hr"); ?>
             <div id="hr-table" class="jobs-details">
+                <br/>
                 <?php RenderHRPage('pull-all'); ?>
             </div>
         <?php RenderFooter("hr"); ?>
