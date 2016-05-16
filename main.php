@@ -12,6 +12,8 @@
     //    TESTING CODE  
     //    $sqlmanager = new SqlConnection();
     //    $sqlmanager->init();
+    
+    // TODO : Add support for current page
         if ($type == "hr"){
         echo '
         <header class="header-image-min">
@@ -94,12 +96,15 @@
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
-        const sql_user = "root";
-        const sql_password = "";
-        const sql_host = "localhost:3306";
+        // const sql_user = "root";
+        // const sql_password = "";
+        // const sql_host = "localhost:3306";
+        const sql_user = "s101091995";
+        const sql_password = "Elth@m13";
+        const sql_host = "mysql.ict.swin.edu.au";
         function __construct(){
             $this->conn = new mysqli(self::sql_host,self::sql_user,self::sql_password); // initializer for databas
-            mysqli_select_db($this->conn,"main");
+            mysqli_select_db($this->conn,"s101091995_db");
         }
         public function init()
         {
@@ -119,7 +124,6 @@
             'JobID varchar(6) NOT NULL,'.
             'Skills text,'.
             'Details text);';
-            mysqli_select_db($this->conn,"main");
             $query = mysqli_query($this->conn, $sql);
         }
         public function addEOI($postData){
@@ -159,7 +163,8 @@
             "LastName = ? ORDER BY EOINumber DESC LIMIT 1;");
             if (!mysqli_stmt_bind_param($stmt, 's', $lastName))
                 die( mysqli_error($this->conn));
-            if ($stmt->execute()){
+             if ($stmt->execute()){
+           // if ($res = mysqli_query($this->conn, $stmt)){    
                 $res = $stmt->get_result();
                 $array = $res->fetch_assoc();
                 echo "<p>Your Expression Of Interest Reference Number is <br/><blockquote>".$array["EOINumber"]."</blockquote>";
