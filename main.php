@@ -6,6 +6,7 @@
     * Last Updated: 11/5/2016
     * Credits: Myself
     */
+    define("IsLocal", false);
     // Used to render minimal-header, CSS applied in page
     function RenderHeader($type = "main")
     {
@@ -96,15 +97,18 @@
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
-        // const sql_user = "root";
-        // const sql_password = "";
-        // const sql_host = "localhost:3306";
-        const sql_user = "s101091995";
-        const sql_password = "Elth@m13";
-        const sql_host = "mysql.ict.swin.edu.au";
+        const sql_user = "root";
+        const sql_password = "";
+        const sql_host = "localhost:3306";
+        const sql_db = "main";
+        
+        // const sql_user = "s101091995";
+        // const sql_password = "Elth@m13";
+        // const sql_host = "mysql.ict.swin.edu.au";
+        // const sql_db = "s101091995_db"; 
         function __construct(){
             $this->conn = new mysqli(self::sql_host,self::sql_user,self::sql_password); // initializer for databas
-            mysqli_select_db($this->conn,"s101091995_db");
+            mysqli_select_db($this->conn, self::sql_db);
         }
         public function init()
         {
@@ -124,7 +128,7 @@
             'JobID varchar(6) NOT NULL,'.
             'Skills text,'.
             'Details text);';
-            $query = mysqli_query($this->conn, $sql);
+            $query = $this->conn->query($sql);
         }
         public function addEOI($postData){
             $stmt = $this->conn->prepare("INSERT INTO table_eoi (EOIStatus, FirstName,".
@@ -159,13 +163,8 @@
         }
         // Retrieves the most recent EOI for a person depending on their surnamez
         public function retrieveEOINumber($lastName){
-            $stmt = $this->conn->prepare("SELECT EOINumber FROM table_eoi WHERE ". 
-            "LastName = ? ORDER BY EOINumber DESC LIMIT 1;");
-            if (!mysqli_stmt_bind_param($stmt, 's', $lastName))
-                die( mysqli_error($this->conn));
-             if ($stmt->execute()){
-           // if ($res = mysqli_query($this->conn, $stmt)){    
-                $res = $stmt->get_result();
+            $stmt = sprintf("SELECT EOINumber FROM table_eoi WHERE LastName = '%s' ORDER BY EOINumber DESC LIMIT 1;", $lastName);
+            if ($res = $this->conn->query($stmt)){ 
                 $array = $res->fetch_assoc();
                 echo "<p>Your Expression Of Interest Reference Number is <br/><blockquote>".$array["EOINumber"]."</blockquote>";
             }
@@ -178,10 +177,9 @@
             $valid = true;
             switch ($type) {
                 case 'pull-all':
-                        $stmt = $this->conn->prepare("SELECT * FROM table_eoi;");
-                        if ($stmt->execute()){
+                        $stmt = "SELECT * FROM table_eoi;";
+                        if ($res = $this->conn->query($stmt)){
                             echo "<table><tr><th>EOI</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th></tr>";
-                            $res = $stmt->get_result();
                             while ($row = $res->fetch_assoc())
                                 echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
                                 . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
