@@ -93,7 +93,23 @@
                 break;
         }
     }
-    
+    // Converts status number into string
+    function ReturnStatus($number){
+        switch ($number) {
+            case 0:
+                return 'New';
+                break;
+            case 1:
+                return 'Current';
+                break;
+            case 2:
+                return 'Final';
+                break;
+            default:
+                return 'Unknown';
+                break;
+        }
+    }
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
@@ -117,6 +133,7 @@
             'EOIStatus int DEFAULT 0,'. // 0 = new, 1 = current, 2 = final
             'FirstName varchar(20) NOT NULL,'.
             'LastName varchar(30) NOT NULL,'.
+            'Gender varchar(10) NOT NULL,'.
             'AddressUnit varchar(20),'.
             'AddressStreetNumber varchar(20),'.
             'AddressStreet varchar(20) NOT NULL,'.
@@ -132,14 +149,15 @@
         }
         public function addEOI($postData){
             $stmt = $this->conn->prepare("INSERT INTO table_eoi (EOIStatus, FirstName,".
-            " LastName, AddressUnit, AddressStreetNumber, AddressStreet, AddressSuburb, AddressState, AddressPostCode, Email, Phone, JobID, Skills, Details)".
-            " VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            " LastName, Gender, AddressUnit, AddressStreetNumber, AddressStreet, AddressSuburb, AddressState, AddressPostCode, Email, Phone, JobID, Skills, Details)".
+            " VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             $skilldata = prepData("skills", $postData);
             $unitplaceholder = prepData("unitnumber", $postData);
             $detailsdata = prepData("details", $postData);
-            mysqli_stmt_bind_param($stmt, 'sssssssssssss' , 
+            mysqli_stmt_bind_param($stmt, 'ssssssssssssss' , 
             $postData["firstname"], 
-            $postData["surname"], 
+            $postData["surname"],
+            $postData["gender"],  
             $unitplaceholder,
             $postData["streetnumber"], 
             $postData["streetname"], 
@@ -166,7 +184,7 @@
             $stmt = sprintf("SELECT EOINumber FROM table_eoi WHERE LastName = '%s' ORDER BY EOINumber DESC LIMIT 1;", $lastName);
             if ($res = $this->conn->query($stmt)){ 
                 $array = $res->fetch_assoc();
-                echo "<p>Your Expression Of Interest Reference Number is <br/><blockquote>".$array["EOINumber"]."</blockquote>";
+                echo "<p>Your Expression Of Interest Reference Number is ".$array["EOINumber"]."</p>";
             }
             else {
                 errorMessage("Failed to retrieve EOI Number");    
@@ -179,11 +197,11 @@
                 case 'pull-all':
                         $stmt = "SELECT * FROM table_eoi;";
                         if ($res = $this->conn->query($stmt)){
-                            echo "<table><tr><th>EOI</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th></tr>";
+                            echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th></th></tr>";
                             while ($row = $res->fetch_assoc())
-                                echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
+                                echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".ReturnStatus($row["EOIStatus"])."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
                                 . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
-                                $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"] 
+                                $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><em><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a></em>" 
                                 ."</td></tr>";
                             echo "</table>";
                         }
@@ -191,7 +209,23 @@
                             $valid = false;
                         }
                     break;
-                
+                // hredit.php?eoi=[THE EOI]
+                case 'eoi-details':
+                    $eoi = $_GET["eoi"];
+                    $stmt = sprintf("SELECT * FROM table_eoi WHERE EOINumber = %d;", $eoi);
+                    if ($res = $this->conn->query($stmt)){
+                        $row = $res->fetch_assoc();
+                        echo "<h1>EOI #".$row['EOINumber'].": ".$row['FirstName']." ".$row['LastName']."</h1>";
+                        echo "<hr/>";
+                        echo "<p>Submission Status : ".ReturnStatus($row["EOIStatus"])."</p>";
+                        echo "<p>Gender : ".ucfirst($row["Gender"])."</p>";
+                        echo "<p>Address : ";
+                        if ($row["AddressUnit"] != ""){
+                            echo $row["AddressUnit"]."/";
+                        }
+                        echo $row["AddressStreetNumber"]." ".$row["AddressStreet"].", ".$row["AddressSuburb"].", ".$row["AddressState"]." ".$row["AddressPostCode"];
+                    }
+                    break;
                 default:
                     # code...
                     break;
@@ -424,7 +458,7 @@
             $sqlconn = new SqlConnection();
             $sqlconn->init();
             $sqlconn->addEOI($_POST);
-            echo "<div id='success-message'><h2>Job Submission Successful, Refer To EOI Number</h2></div>";
+            echo "<div id='success-message'><h2>Please Note EOI Number</h2></div>";
         }
         else {
             errorMessage("Job Submission Failed, Check Fields");
