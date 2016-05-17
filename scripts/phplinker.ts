@@ -23,4 +23,11 @@ function scanForError() {
         successCall.style.display = "none";
     }
 }
+function filterByName(){
+    alert("Yes");
+}
 window.onload = scanForError;
+if (document.getElementById("name-search")){
+    var search = document.getElementById("name-search");
+    search.onkeypress = filterByName;
+}

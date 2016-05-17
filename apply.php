@@ -116,6 +116,7 @@
                         </span>
                     </div>
                     <div class="input-field">
+                        <!--TODO : FIX OTHER SKILLS SUMISSION-->
                        <label for="details">Additional Details/Other Skills</label>
                        <textarea class="text-input" rows="4" id="details" name="details" placeholder="I am keen to be employed"></textarea>
                     </div>

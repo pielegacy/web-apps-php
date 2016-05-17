@@ -56,7 +56,7 @@ em{
     margin: 0 auto;
     text-align: left;
 }
-#hr-table>table>tbody>tr{
+#hr-table>table>tbody>tr>th{
     border-bottom: solid 1px;
 }
 

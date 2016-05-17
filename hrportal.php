@@ -8,6 +8,7 @@
         <meta name="keywords" content="db,pty,ltd,hr,portal" />
         <meta name="author" content="Alex Billson" />
     <?php require "main.php" ?>
+            <script src="scripts/searchtophp.js"></script>
     </head>
     <body>
         <?php RenderHeader("hr"); ?>

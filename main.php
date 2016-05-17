@@ -24,7 +24,14 @@
         </header>
         <nav class="hr-nav">
             <ul>
-                <li><a class="current" href="hrportal.php">HR Portal</a></li>
+                <li class="current"><a href="hrportal.php">HR Portal</a></li>
+                <li> | </li>
+                <li>Filter by:</li>
+                <li><a href="hrportal.php">All</a></li>
+                <li><a href="hrportal.php?byJob=DB0001" title="Database Administrator">DB0001</a></li>
+                <li><a href="hrportal.php?byJob=DB0002" title="Database Systems Administrator">DB0002</a></li>
+                <li><a href="hrportal.php?byJob=DB0003" title="NoSql Database Administrator">DB0003</a></li>
+                <input type="text" id="name-search" placeholder="Surname?"/>
                 <li> | </li>
                 <li><a href="index.php">Exit</a></li>
             </ul>
@@ -194,20 +201,31 @@
         public function hrQuery($type){
             $valid = true;
             switch ($type) {
-                case 'pull-all':
-                        $stmt = "SELECT * FROM table_eoi;";
-                        if ($res = $this->conn->query($stmt)){
-                            echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th></th></tr>";
-                            while ($row = $res->fetch_assoc())
-                                echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".ReturnStatus($row["EOIStatus"])."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
-                                . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
-                                $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><em><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a></em>" 
-                                ."</td></tr>";
-                            echo "</table>";
+                case 'pull-all':                    
+                    $stmt = "SELECT * FROM table_eoi;";
+                    if (isset($_GET["byJob"])){
+                        $stmt = "SELECT * FROM table_eoi WHERE JobID = \"".$_GET["byJob"]."\";";
+                    }
+                    if (isset($_GET["byName"])){
+                        $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_GET["byName"]."' OR LastName LIKE '".$_GET["byName"]."');";
+                    }    
+                    if ($res = $this->conn->query($stmt)){
+                        echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th></th></tr>";
+                        while ($row = $res->fetch_assoc())
+                            echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".ReturnStatus($row["EOIStatus"])."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
+                            . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
+                            $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><em><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a></em>" 
+                            ."</td></tr>";
+                        echo "</table>";
+                        if (isset($_GET["byJob"])){
+                            echo "<div class='content-centered center'><h3>Options</h3><hr/>".
+                            "<a href='hrdelete.php?jobID=".$_GET["byJob"]."'>Delete All Records For This Job</a>".
+                            "</div>";
                         }
-                        else {
-                            $valid = false;
-                        }
+                    }
+                    else {
+                        $valid = false;
+                    }
                     break;
                 // hredit.php?eoi=[THE EOI]
                 case 'eoi-details':
