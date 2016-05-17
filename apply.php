@@ -38,7 +38,7 @@
                         <div id="genders" name="genders" class="gender-input">
                             <label for="male">Male</label><input id="male" type="radio" name="gender" value="male"/>
                             <label for="female">Female</label><input id="female" type="radio" name="gender" value="female"/>
-                            <label for="other">Other</label><input id="other" type="radio" name="gender" value="other" checked="checked"/>
+                            <label for="other">Other</label><input id="other" type="radio" name="gender" value="other" checked="true"/>
                         </div>
                     </div>
                     <div class="input-field">    
@@ -116,7 +116,6 @@
                         </span>
                     </div>
                     <div class="input-field">
-                        <!--TODO : FIX OTHER SKILLS SUMISSION-->
                        <label for="details">Additional Details/Other Skills</label>
                        <textarea class="text-input" rows="4" id="details" name="details" placeholder="I am keen to be employed"></textarea>
                     </div>

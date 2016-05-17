@@ -21,6 +21,7 @@
             <br />
             <h1><a href="index.php">Database Administrator Company Pty. Ltd</a></h1>
             <script src="scripts/notify.js"></script>
+            <script src="scripts/searchtophp.js"></script>
         </header>
         <nav class="hr-nav">
             <ul>
@@ -182,6 +183,7 @@
             }
             else{
                 echo "<h3>Server error, please contact us for help</h3>";
+                echo $stmt->error;
             }
             $stmt->close();
             $this->conn->close();
@@ -207,14 +209,14 @@
                         $stmt = "SELECT * FROM table_eoi WHERE JobID = \"".$_GET["byJob"]."\";";
                     }
                     if (isset($_GET["byName"])){
-                        $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_GET["byName"]."' OR LastName LIKE '".$_GET["byName"]."');";
+                        $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_GET["byName"]."%' OR LastName LIKE '".$_GET["byName"]."%');";
                     }    
                     if ($res = $this->conn->query($stmt)){
-                        echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th></th></tr>";
+                        echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th class='center'>Details</th></tr>";
                         while ($row = $res->fetch_assoc())
                             echo "<tr class='hr-row'><td>".$row["EOINumber"]."</td><td>".ReturnStatus($row["EOIStatus"])."</td><td>".$row["FirstName"]." ".$row["LastName"]."</td><td>"
                             . $row["AddressSuburb"]. ', '. $row["AddressState"] .' '. $row["AddressPostCode"]."</td><td>".
-                            $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><em><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a></em>" 
+                            $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a>" 
                             ."</td></tr>";
                         echo "</table>";
                         if (isset($_GET["byJob"])){
@@ -235,21 +237,41 @@
                         $row = $res->fetch_assoc();
                         echo "<h1>EOI #".$row['EOINumber'].": ".$row['FirstName']." ".$row['LastName']."</h1>";
                         echo "<hr/>";
+                        echo "<p>Interested In : <u><a href=\"job-description.php?jobid=".$row["JobID"]."\">".$row["JobID"]."</a></u></p>";
                         echo "<p>Submission Status : ".ReturnStatus($row["EOIStatus"])."</p>";
                         echo "<p>Gender : ".ucfirst($row["Gender"])."</p>";
                         echo "<p>Address : ";
                         if ($row["AddressUnit"] != ""){
                             echo $row["AddressUnit"]."/";
                         }
-                        echo $row["AddressStreetNumber"]." ".$row["AddressStreet"].", ".$row["AddressSuburb"].", ".$row["AddressState"]." ".$row["AddressPostCode"];
+                        echo $row["AddressStreetNumber"]." ".$row["AddressStreet"].", ".$row["AddressSuburb"].", ".$row["AddressState"]." ".$row["AddressPostCode"]."</p>";
+                        echo "<p>Email : ".$row["Email"]."</p>";
+                        echo "<p>Phone : ".$row["Phone"]."</p>";
+                        echo "<p>Skills : <br/><ol>";
+                        $skills = explode("|",$row['Skills']);
+                        foreach ($skills as $key => $value) {
+                            if ($value != "")
+                                echo "<li>".ucfirst($value)."</li>";
+                        }
+                        echo "</ol>";
+                        if ($row["Details"] != "")
+                            echo "<p>Details/Other Skills : <br/><blockquote>".$row['Details']."</blockquote></p>";
                     }
                     break;
                 case 'job-clear':
                     $stmt = sprintf("DELETE FROM table_eoi WHERE JobID = '%s';", $_GET["jobID"]);
-                    if ($res = $this->conn->query($stmt)){
-                        header("location : hrportal.php");
-                    }
+                    $res = $this->conn->query($stmt);
+             
                 break;
+                case "update-status":
+                if ($_POST["status-new"] != ""){
+                    $stmt = "UPDATE table_eoi SET EOIStatus=".$_POST["status-new"]." WHERE EOINumber = ".$_GET["eoi"].";";
+                    if (!$this->conn->query($stmt)){
+                        errorMessage("<h1>Server Error, Contact IT</h1>");
+                        echo mysqli_error($this->conn);
+                    }
+                }
+                    break;
                 default:
                     # code...
                     break;
@@ -268,6 +290,11 @@
         $sql = new SqlConnection();
         $sql->init();
         $sql->hrQuery($type);
+    }
+    function UpdateStatus(){
+        $sql = new SqlConnection();
+        $sql->init();
+        $sql->hrQuery("update-status");
     }
     function RenderJobPage(){
         $id = $_GET["jobid"];

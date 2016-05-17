@@ -41,6 +41,10 @@
              <div class="center">
                  <em>Hover over the semi-transparent footer to see a link to the site's enhancements</em>
              </div>
+             <br/>
+             <div class="center">
+                 <a href="hrportal.php">Need HR Tools? Click Here!</a>
+             </div>
          </div>
          <footer>
              &copy; 2016, Alex Billson - Interested in the site's enhancements? <a href="enhancements.html">Click here</a>
