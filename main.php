@@ -244,12 +244,24 @@
                         echo $row["AddressStreetNumber"]." ".$row["AddressStreet"].", ".$row["AddressSuburb"].", ".$row["AddressState"]." ".$row["AddressPostCode"];
                     }
                     break;
+                case 'job-clear':
+                    $stmt = sprintf("DELETE FROM table_eoi WHERE JobID = '%s';", $_GET["jobID"]);
+                    if ($res = $this->conn->query($stmt)){
+                        header("location : hrportal.php");
+                    }
+                break;
                 default:
                     # code...
                     break;
             }
             if (!$valid)
                 errorMessage("Unexpected Error. Contact Support");
+        }
+    }
+    function clearJob(){
+        if (isset($_GET["jobID"])){
+            $sql = new SqlConnection();
+            $sql->hrQuery('job-clear');
         }
     }
     function RenderHRPage($type){
