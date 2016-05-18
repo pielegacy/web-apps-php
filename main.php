@@ -32,7 +32,7 @@
                 <li><a href="hrportal.php?byJob=DB0001" title="Database Administrator">DB0001</a></li>
                 <li><a href="hrportal.php?byJob=DB0002" title="Database Systems Administrator">DB0002</a></li>
                 <li><a href="hrportal.php?byJob=DB0003" title="NoSql Database Administrator">DB0003</a></li>
-                <input type="text" id="name-search" placeholder="Surname?"/>
+                <li><form class="inline-form"><input type="text" id="name-search" placeholder="Surname?"/></form></li>
                 <li> | </li>
                 <li><a href="index.php">Exit</a></li>
             </ul>
@@ -133,6 +133,9 @@
         function __construct(){
             $this->conn = new mysqli(self::sql_host,self::sql_user,self::sql_password); // initializer for databas
             mysqli_select_db($this->conn, self::sql_db);
+        }
+        function __destruct(){
+            $this->conn->close(); // After we're done with it, close the Database
         }
         public function init()
         {
@@ -255,7 +258,7 @@
                         }
                         echo "</ol>";
                         if ($row["Details"] != "")
-                            echo "<p>Details/Other Skills : <br/><blockquote>".$row['Details']."</blockquote></p>";
+                            echo "<p>Details/Other Skills : </p><br/><blockquote>".$row['Details']."</blockquote>";
                     }
                     break;
                 case 'job-clear':
@@ -389,7 +392,7 @@
                 Required skills include : 
                 </p>
                 <ul>
-                    <li>A deep unuderstanding of NodeJS and MongoDB technologies</li>
+                    <li>A deep understanding of NodeJS and MongoDB technologies</li>
                     <li>Basic understand of web technologies like HTML, CSS and Javascript</li>
                     <li>Formal clothing</li>
                     <li>A love for computing and hatred for tables</li>
@@ -507,9 +510,6 @@
                 $formvalid = false;
                 echo "<p>".$key." is invalid.</p>";
             }
-            // else {
-            //     echo "<p>".$key." : ".$value."</p>";
-            // }
         }
         if ($formvalid){
             $sqlconn = new SqlConnection();

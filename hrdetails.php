@@ -19,7 +19,7 @@
                     }
                     RenderHRPage('eoi-details'); 
                     $eoi = $_GET["eoi"];
-                    echo "<form class=\"center\" action=\"hrdetails.php?eoi=\"$eoi\" method=\"POST\">";
+                    echo "<form class=\"center\" action=\"hrdetails.php?eoi=$eoi\" method=\"POST\">";
                     echo "<input type=\"text\" name=\"eoi\" hidden value=\"".$eoi."\"/>";
                 ?>
                     <h3>Options</h3>
