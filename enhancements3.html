@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PHP Enhancements - Database Administrator Company Pty. Ltd</title>
+        <link rel="stylesheet" href="styles/main.css" />
+        <meta charset="UTF-8" />
+        <meta name="description" content="Database Administrator Company Pty. Ltd Enhancements" />
+        <meta name="keywords" content="db,pty,ltd,enhancements" />
+        <meta name="author" content="Alex Billson" />
+    </head>
+    <body>
+        <header class="header-image-min">
+            <br />
+            <h1><a href="index.php">Database Administrator Company Pty. Ltd</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="jobs.php">Jobs</a></li>
+                <li><a href="apply.php">Apply</a></li>
+                <li><a href="about.php">About</a></li>
+            </ul>
+        </nav>
+        <section id="index-main-min">
+            <article class="content-centered">
+                <h2>PHP Enhancements</h2>
+                <ol class="enhancement-list">
+                    <li><em><a href="jobs.php" class="siglink">Job Description Page Rendering Now Dynamically Handled</a></em><br/>
+                    From the start I have not liked having different pages for different jobs as it is messy and not very scalable.
+                    <br/>Thanks to PHP I have changed the structure of the job descriptions to instead all lead to the same page <u>job-description.php.</u>
+                    <br/>Job descriptions are now stored as strings in main.php and are rendered using a function called <u>RenderJobPage</u>. This takes no
+                    parameters and instead relies on a variable stored in the url called jobid (eg job-description.php?jobid=DB0001 will take you to DB0001's job page).
+                    </li>
+                </ol>
+            </article>
+        </section>
+        <footer>
+            &copy; 2016, Alex Billson - Interested in the site's enhancements? <a href="enhancements">Click here</a>
+        </footer>
+    </body>
+</html>
