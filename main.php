@@ -32,7 +32,7 @@
                 <li><a href="hrportal.php?byJob=DB0001" title="Database Administrator">DB0001</a></li>
                 <li><a href="hrportal.php?byJob=DB0002" title="Database Systems Administrator">DB0002</a></li>
                 <li><a href="hrportal.php?byJob=DB0003" title="NoSql Database Administrator">DB0003</a></li>
-                <li><form class="inline-form"><input type="text" id="name-search" placeholder="Surname?"/></form></li>
+                <li><form action="hrportal.php?byName=true" method="POST" class="inline-form"><input type="text" name="byName" id="name-search" placeholder="Surname?"/></form></li>
                 <li> | </li>
                 <li><a href="index.php">Exit</a></li>
             </ul>
@@ -212,7 +212,7 @@
                         $stmt = "SELECT * FROM table_eoi WHERE JobID = \"".$_GET["byJob"]."\";";
                     }
                     if (isset($_GET["byName"])){
-                        $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_GET["byName"]."%' OR LastName LIKE '".$_GET["byName"]."%');";
+                        $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_POST["byName"]."%' OR LastName LIKE '".$_POST["byName"]."%');";
                     }    
                     if ($res = $this->conn->query($stmt)){
                         echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th class='center'>Details</th></tr>";
@@ -258,7 +258,7 @@
                         }
                         echo "</ol>";
                         if ($row["Details"] != "")
-                            echo "<p>Details/Other Skills : </p><br/><blockquote>".$row['Details']."</blockquote>";
+                            echo "<p>Details/Other Skills : </p><blockquote>".$row['Details']."</blockquote>";
                     }
                     break;
                 case 'job-clear':
