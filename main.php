@@ -137,15 +137,15 @@
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
-        const sql_user = "root";
-        const sql_password = "";
-        const sql_host = "localhost:3306";
-        const sql_db = "main";
+        // const sql_user = "root";
+        // const sql_password = "";
+        // const sql_host = "localhost:3306";
+        // const sql_db = "main";
         
-        // const sql_user = "s101091995";
-        // const sql_password = "Elth@m13";
-        // const sql_host = "mysql.ict.swin.edu.au";
-        // const sql_db = "s101091995_db"; 
+        const sql_user = "s101091995";
+        const sql_password = "Elth@m13";
+        const sql_host = "mysql.ict.swin.edu.au";
+        const sql_db = "s101091995_db"; 
         function __construct(){
             $this->conn = new mysqli(self::sql_host,self::sql_user,self::sql_password); // initializer for databas
             mysqli_select_db($this->conn, self::sql_db);
