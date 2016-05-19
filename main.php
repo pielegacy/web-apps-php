@@ -118,6 +118,22 @@
                 break;
         }
     }
+    // Handles Custom Query Functionality
+    function ParseQuery($querystring)
+    {
+        $querystring = str_replace("&", "' AND ", $querystring);
+        $querystring = str_replace(">=", ">='", $querystring);
+        $querystring = str_replace("<=", "<='", $querystring);
+        $querystring = str_replace(" is ", "=", $querystring);
+        $querystring = str_replace("=", "='", $querystring);
+        $querystring = str_replace(">", ">'", $querystring);
+        $querystring = str_replace("<", "<'", $querystring);
+        $querystring = str_replace("|", "' OR ", $querystring);
+        $stmt = "SELECT * FROM table_eoi WHERE ".$querystring."';";
+        $stmt = str_replace("''", "'", $stmt);
+        return $stmt;
+        
+    }
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
@@ -206,13 +222,19 @@
         public function hrQuery($type){
             $valid = true;
             switch ($type) {
-                case 'pull-all':                    
+                case 'pull':
+                    // Defaults to select all                    
                     $stmt = "SELECT * FROM table_eoi;";
+                    // Where a job has been specified
                     if (isset($_GET["byJob"])){
                         $stmt = "SELECT * FROM table_eoi WHERE JobID = \"".$_GET["byJob"]."\";";
                     }
-                    if (isset($_GET["byName"])){
+                    // Where a search has been submitted
+                    else if (isset($_GET["byName"])){
                         $stmt = "SELECT * FROM table_eoi WHERE (Firstname LIKE '".$_POST["byName"]."%' OR LastName LIKE '".$_POST["byName"]."%');";
+                    }
+                    else if (isset($_GET["byQuery"])){
+                        $stmt = ParseQuery($_POST["query"]);
                     }    
                     if ($res = $this->conn->query($stmt)){
                         echo "<table><tr><th>EOI</th><th>Status</th><th>Name</th><th>Location</th><th>Email</th><th>Phone</th><th>Job Interest</th><th class='center'>Details</th></tr>";
@@ -222,11 +244,24 @@
                             $row["Email"]."</td><td>".$row["Phone"]."</td><td>".$row["JobID"]."</td><td><a href=\"hrdetails.php?eoi=".$row["EOINumber"]."\">...</a>" 
                             ."</td></tr>";
                         echo "</table>";
+                        echo "<div class='content-centered center'><h3>Options</h3><hr/>";
                         if (isset($_GET["byJob"])){
-                            echo "<div class='content-centered center'><h3>Options</h3><hr/>".
-                            "<a href='hrdelete.php?jobID=".$_GET["byJob"]."'>Delete All Records For This Job</a>".
-                            "</div>";
+                            echo "<a href='hrdelete.php?jobID=".$_GET["byJob"]."'>Delete All Records For This Job</a>";
+                            echo '<form method="POST" action="hrportal.php?updateStatusJob='.$_GET["byJob"].'">'.
+                            '<label for="status-new">Update EOI Status for Job </label><select name="status-new" id="status-new">
+                            <option value="">Choose Status</option>
+                            <option value="0">New</option>
+                            <option value="1">Current</option>
+                            <option value="2">Final</option>
+                            </select> 
+                            <input type="submit" value="Update"/>'.
+                            '</form>';
                         }
+                        echo '<form action="hrportal.php?byQuery=true" method="POST">'.
+                            '<label for="query" >Custom Query <a href="enhancements3.html">﹖</a> </label>'.
+                            '<input type="text" autocomplete="off" id="query" name="query"/>'.
+                        '</form>';
+                        echo "</div>";
                     }
                     else {
                         $valid = false;
@@ -261,14 +296,21 @@
                             echo "<p>Details/Other Skills : </p><blockquote>".$row['Details']."</blockquote>";
                     }
                     break;
+                // Remove Job Applications From Certain ID
                 case 'job-clear':
                     $stmt = sprintf("DELETE FROM table_eoi WHERE JobID = '%s';", $_GET["jobID"]);
                     $res = $this->conn->query($stmt);
              
                 break;
+                // Update EOI Status
                 case "update-status":
                 if ($_POST["status-new"] != ""){
-                    $stmt = "UPDATE table_eoi SET EOIStatus=".$_POST["status-new"]." WHERE EOINumber = ".$_GET["eoi"].";";
+                    if (isset($_GET["updateStatusJob"])){
+                        $stmt = "UPDATE table_eoi SET EOIStatus=".$_POST["status-new"]." WHERE JobID = '".$_GET["updateStatusJob"]."';";
+                    }
+                    else{
+                        $stmt = "UPDATE table_eoi SET EOIStatus=".$_POST["status-new"]." WHERE EOINumber = '".$_GET["eoi"]."';";
+                    }
                     if (!$this->conn->query($stmt)){
                         errorMessage("<h1>Server Error, Contact IT</h1>");
                         echo mysqli_error($this->conn);

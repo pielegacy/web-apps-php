@@ -10,10 +10,13 @@
     <?php require "main.php" ?>
     </head>
     <body>
-        <?php RenderHeader("hr"); ?>
+        <?php RenderHeader("hr"); 
+        if (isset($_GET["updateStatusJob"]))
+            UpdateStatus();
+            ?>
             <div id="hr-table" class="jobs-details">
                 <br/>
-                <?php RenderHRPage('pull-all'); ?>
+                <?php RenderHRPage('pull'); ?>
             </div>
         <?php RenderFooter("hr"); ?>
     </body>

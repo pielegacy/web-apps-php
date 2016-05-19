@@ -30,6 +30,15 @@
                     <br/>Job descriptions are now stored as strings in main.php and are rendered using a function called <u>RenderJobPage</u>. This takes no
                     parameters and instead relies on a variable stored in the url called jobid (eg job-description.php?jobid=DB0001 will take you to DB0001's job page).
                     </li>
+                    <li><em><a href="hrportal.php" class="siglink">Custom Query Search</a></em><br/>
+                    Whilst HR may use the pre defined queries in the toolbar, they can write up their own query parameters in the search<br/>
+                    down the bottom of the page using easy to understand language which converts to SQL. Examples include
+                    <ul>
+                        <li><u>EOINumber>3</u> - Will show all entries with an EOINumber greater than 3</li>
+                        <li><u>Email is test@outlook.com</u> - Will show all entries where the email address is test@outlook.com</li>
+                        <li><u>LastName=Billson&JobID=DB0001</u> - Will show all records where someone with the surname Billson applied for DB0001</li>
+                    </ul>
+                    </li>
                 </ol>
             </article>
         </section>
