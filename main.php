@@ -92,7 +92,10 @@
                         $skillstring .= "other";
                     return $skillstring;
                 break;
-            
+            case 'gender':
+                if (isset($formdata["gender"]) == false)
+                    return "other";
+                break;
             default:
                 if (!isset($formdata[$type]))
                     return "";
@@ -137,21 +140,21 @@
     // SqlConnection object
     // Facilitates easier usage of MySql across site
     class SqlConnection{
-        // const sql_user = "root";
-        // const sql_password = "";
-        // const sql_host = "localhost:3306";
-        // const sql_db = "main";
+        const sql_user = "root";
+        const sql_password = "";
+        const sql_host = "localhost:3306";
+        const sql_db = "main";
         
-        const sql_user = "s101091995";
-        const sql_password = "Elth@m13";
-        const sql_host = "mysql.ict.swin.edu.au";
-        const sql_db = "s101091995_db"; 
+        // const sql_user = "s101091995";
+        // const sql_password = "Elth@m13";
+        // const sql_host = "mysql.ict.swin.edu.au";
+        // const sql_db = "s101091995_db"; 
         function __construct(){
             $this->conn = new mysqli(self::sql_host,self::sql_user,self::sql_password); // initializer for databas
             mysqli_select_db($this->conn, self::sql_db);
         }
         function __destruct(){
-            $this->conn->close(); // After we're done with it, close the Database
+            @$this->conn->close(); // After we're done with it, close the Database
         }
         public function init()
         {
@@ -181,10 +184,11 @@
             $skilldata = prepData("skills", $postData);
             $unitplaceholder = prepData("unitnumber", $postData);
             $detailsdata = prepData("details", $postData);
+            $genderdata = prepData("gender", $postData);
             mysqli_stmt_bind_param($stmt, 'ssssssssssssss' , 
             $postData["firstname"], 
             $postData["surname"],
-            $postData["gender"],  
+            $genderdata,
             $unitplaceholder,
             $postData["streetnumber"], 
             $postData["streetname"], 
@@ -300,7 +304,6 @@
                 case 'job-clear':
                     $stmt = sprintf("DELETE FROM table_eoi WHERE JobID = '%s';", $_GET["jobID"]);
                     $res = $this->conn->query($stmt);
-             
                 break;
                 // Update EOI Status
                 case "update-status":
@@ -490,7 +493,7 @@
                     $postcodepairs = array('3' => 'VIC', '8' => 'VIC','1' => 'NSW','2' => 'NSW','4' => 'QLD',
                     '9' => 'QLD','0' => 'NT/ACT','6'=>'WA', '5' => 'SA','7' => 'TAS');
                     $postsplit = str_split($value);
-                    if ($postcodepairs[$postsplit[0]]){ // Checks if element is a valid state
+                    if ($postcodepairs[$postsplit[0]] && strlen($value) == 4){ // Checks if element is a valid state
                         if (strpos($postcodepairs[$postsplit[0]], $statename) === FALSE)
                             $valid = false;
                     }
@@ -531,11 +534,13 @@
                 case 'streetname':
                 case 'suburbname':
                 case 'statename':
-                case 'gender':
                 case 'email':
                 case 'postcode':
                 case 'streetnumber':
                     $valid = false;
+                    break;
+                case 'gender':
+                    $value = "other";
                     break;
                 
                 default:

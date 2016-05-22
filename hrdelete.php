@@ -14,8 +14,18 @@
             <div id="index-main-min" class="content-centered">
                 <br/>
                 <?php 
+                if (!isset($_POST["confirmed"])){
+                    echo '<form action="hrdelete.php?jobID='.$_GET["jobID"].'" method="POST">
+                        <label for="confirmed">Confirm Delete For '.$_GET["jobID"].'?</label>
+                        <input type="checkbox" name="confirmed" id="confirmed" required="true"/>
+                        <br/>
+                        <input type="submit" value="Submit"/>
+                    </form>';
+                }
+                else {
                     clearJob();
-                    echo "<a class=\"center\" href=\"hrportal.php\">".$_GET["jobID"]." cleared of all applications. <br/> Click here to return to portal.</a>" 
+                    echo "<a class=\"center\" href=\"hrportal.php\">".$_GET["jobID"]." cleared of all applications. <br/> <u>Click here to return to portal.</u></a>";
+                }
                 ?>
                 
             </div>
