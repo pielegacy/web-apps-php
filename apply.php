@@ -38,7 +38,7 @@
                         <div id="genders" name="genders" class="gender-input">
                             <label for="male">Male</label><input id="male" type="radio" name="gender" value="male"/>
                             <label for="female">Female</label><input id="female" type="radio" name="gender" value="female"/>
-                            <label for="other">Other</label><input id="other" type="radio" name="gender" value="other" checked="true"/>
+                            <label for="other">Other</label><input id="other" type="radio" name="gender" value="other" checked="checked"/>
                         </div>
                     </div>
                     <div class="input-field">    

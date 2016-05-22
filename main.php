@@ -93,7 +93,7 @@
                     return $skillstring;
                 break;
             case 'gender':
-                if (isset($formdata["gender"]) == false)
+                if (isset($formdata["gender"]) === false || $formdata["gender"] != "male" && $formdata["gender"] != "female")
                     return "other";
                 break;
             default:
